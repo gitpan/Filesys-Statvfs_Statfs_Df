@@ -5,3 +5,8 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 	  I made a bunch of changes to Filesys::Statfs. Right now it only
           works with Darwin and BSD. These are the only two Unix OSes without statvfs()
 	  that I could find.
+
+0.70  Fri Sep 3 20:26:11 2004
+	- Updated the Makefile.PL to check and see if the statvfs header and statfs
+	  header exist. If I cant find them in the include path I default to the 
+	  previous behavior.
