@@ -31,3 +31,6 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 
 0.73  Tues Feb 18 14:10:42 2005
 	- Added some extra error checking.
+
+0.74  Tues Mar 6 11:43:42 2005
+	- Changed the signed test.

@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statvfs);
-$VERSION = '0.73';
+$VERSION = '0.74';
 bootstrap Filesys::Statvfs $VERSION;
 
 1;

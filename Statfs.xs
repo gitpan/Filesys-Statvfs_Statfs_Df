@@ -18,6 +18,8 @@ extern "C" {
 }
 #endif
 
+#define SIGNED_TEST(n) ((n * 0 - 1) < 0)
+
 
 typedef struct statfs Statfs;
 
@@ -28,37 +30,52 @@ statfs(dir)
 	char *dir
 	PREINIT:
 	Statfs st;
-	Statfs *st_ptr;
 	PPCODE:
 #ifdef _SOLARIS__
 	if(statfs(dir, &st, 0, 0) == 0) {
 #else
 	if(statfs(dir, &st) == 0) {
 #endif
-		st_ptr = &st;
 		EXTEND(sp, 15);
 #ifdef _SOLARIS__
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_fstyp)));
+		if(SIGNED_TEST(st.f_fstyp))
+			PUSHs(sv_2mortal(newSViv(st.f_fstyp)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_fstyp)));
 #else
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_type)));
+		if(SIGNED_TEST(st.f_type))
+			PUSHs(sv_2mortal(newSViv(st.f_type)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_type)));
 #endif
-		PUSHs(sv_2mortal(newSVuv(st_ptr->f_bsize)));
-		PUSHs(sv_2mortal(newSVuv(st_ptr->f_blocks)));
-		PUSHs(sv_2mortal(newSVuv(st_ptr->f_bfree)));
-		if(st_ptr->f_files < 0) {
-			PUSHs(sv_2mortal(newSViv(st_ptr->f_files)));
-			PUSHs(sv_2mortal(newSViv(st_ptr->f_ffree)));
-		}
-		else {
-			PUSHs(sv_2mortal(newSVuv(st_ptr->f_files)));
-			PUSHs(sv_2mortal(newSVuv(st_ptr->f_ffree)));
-		}
+		if(SIGNED_TEST(st.f_bsize))
+			PUSHs(sv_2mortal(newSViv(st.f_bsize)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_bsize)));
+
+		if(SIGNED_TEST(st.f_blocks))
+			PUSHs(sv_2mortal(newSViv(st.f_blocks)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_blocks)));
+
+		if(SIGNED_TEST(st.f_bfree))
+			PUSHs(sv_2mortal(newSViv(st.f_bfree)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_bfree)));
+
+		if(SIGNED_TEST(st.f_files))
+			PUSHs(sv_2mortal(newSViv(st.f_files)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_files)));
+
+		if(SIGNED_TEST(st.f_ffree))
+			PUSHs(sv_2mortal(newSViv(st.f_ffree)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_ffree)));
 #ifndef _SOLARIS__
-		if(st_ptr->f_bavail < 0) {
-			PUSHs(sv_2mortal(newSViv(st_ptr->f_bavail)));
-		}
-		else {
-			PUSHs(sv_2mortal(newSVuv(st_ptr->f_bavail)));
-		}
+		if(SIGNED_TEST(st.f_bavail))
+			PUSHs(sv_2mortal(newSViv(st.f_bavail)));
+		else
+			PUSHs(sv_2mortal(newSVuv(st.f_bavail)));
 #endif
 	}
