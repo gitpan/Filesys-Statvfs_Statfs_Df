@@ -4,20 +4,6 @@ This is a new release to support some systems that only have statfs().
 If you have problems with this release try using Filesys-Statvfs_Df-0.68.
 
 DESCRIPTION
-Filesys::Statfs provides an interface between
-Perl and the statfs() system call. This module
-will only install if you are using Darwin or
-certain BSD systems that dont have statvfs(). 
-
-SYNOPSIS Filesys::Statfs
-
-use Filesys::Statfs;
-
-	  my($ftype, $bsize, $blocks, $bfree, $files,
-             $ffree, $bavail) = statfs("/tmp");
-
-
-
 Filesys::Statvfs provides an interface between
 Perl and the statvfs() system call.
 
@@ -31,16 +17,25 @@ use Filesys::Statvfs;
 
 
 
+Filesys::Statfs provides an interface between
+Perl and the statfs() system call. This module
+will only install if you are a system that
+doesn't have statvfs(). 
+
+SYNOPSIS Filesys::Statfs
+
+use Filesys::Statfs;
+
+	  my($ftype, $bsize, $blocks, $bfree, $files,
+             $ffree, $bavail) = statfs("/tmp");
+
+
+
 Filesys::Df uses Filesys::Statvfs or
 Filesys::Statfs to obtain filesystem statistics,
 then creates additional filesystem information
 such as percent full, user and superuser
-differentials, etc ....
-
-If the system does not contain the statvfs() 
-call (Darwin or certain BSD OSes most likely). The
-Makefile will try to use the Filesys::Statfs module 
-instead. 
+differentials, etc.
 
 Filesys::Df will also let you specify the block
 size for the values you wish to see. The default
@@ -77,9 +72,9 @@ TO INSTALL RUN:
 	make test
 	make install
 
-For this module to install and work properly you will need
-to have the statvfs() or statfs() system call supported
-by your system.
+For this module to install and work properly your
+system will need to support either the statvfs() or
+statfs() system call.
 
 A good way to tell if your system supports them is to
 to look for the sys/statvfs.h or sys/statfs.h header in your
@@ -91,18 +86,17 @@ Another possible reason may be that the statvfs structure defined
 in statvfs.h does not contain one or more of the fields that are
 defined in Statvfs.xs. This also applies to statfs().
 
-During the 'make test' test.pl will use statvfs() or statfs()
+During the 'make test', test.pl will use statvfs() or statfs()
 to stat the root directory "/". If it fails it will report
 an error, otherwise it will report all the standard
-fields in the structure. If you are running any flavor of
-Digital Unix, or IRIX, the fstr value may be NULL.
-The 'make test' will then proceed to test df() call.
+fields in the structure. The 'make test' will then proceed
+to test the df() call.
 
 Once installed, run 'perldoc Filesys::Df' for more information. 
 
 If you have any problems or questions please email
 me at IGuthrie@aol.com with "Filesys Module" in
-the subject line. Please include the module version
+the subject line. Please include the module version,
 and if you are using statvfs() or statfs() on your
 system.
 

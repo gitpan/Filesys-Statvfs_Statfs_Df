@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statfs);
-$VERSION = '0.02';
+$VERSION = '0.71';
 bootstrap Filesys::Statfs $VERSION;
 
 1;
@@ -41,7 +41,7 @@ the statfs() man page.
 Ian Guthrie
 IGuthrie@aol.com
 
-Copyright (c) 2003 Ian Guthrie. All rights reserved.
+Copyright (c)  2003 Ian Guthrie. All rights reserved.
                This program is free software; you can redistribute it and/or
                modify it under the same terms as Perl itself.
 

@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.70';
+$VERSION = '0.71';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -39,7 +39,7 @@ my %fs;
 	($fs{blocks} == 0)  && 
 			(return());
 
-	####Return info in 1k blocks or specified size
+	#### Return info in 1k blocks or specified size
 
 	## Added for GNU lib bug 
 	if($frsize != 0) {
@@ -47,7 +47,7 @@ my %fs;
 			$result = $block_size / $frsize;
 			$fs{blocks} /= $result;
 			$fs{bfree} /= $result;
-			####Keep bavail -
+			#### Keep bavail -
 			($fs{bavail} < 0) &&
 				($result *= -1);
 			$fs{bavail} /= $result;
@@ -57,7 +57,7 @@ my %fs;
 			$result = $frsize / $block_size;
 			$fs{blocks} *= $result;
 			$fs{bfree} *= $result;
-			####Keep bavail -
+			#### Keep bavail -
 			($fs{bavail} < 0) &&
 				($result *= -1);
 			$fs{bavail} *= $result;
@@ -65,7 +65,7 @@ my %fs;
 	}
 
 	$fs{used} = $fs{blocks} - $fs{bfree};
-	####There is a reserved amount for the su
+	#### There is a reserved amount for the su
 	if($fs{bfree} != $fs{bavail}) {
 		$fs{user_blocks} = $fs{blocks} - ($fs{bfree} - $fs{bavail});
 		$fs{user_used} = $fs{user_blocks} - $fs{bavail};
@@ -80,7 +80,7 @@ my %fs;
 		}
 	}
 	
-	####su and user amount are the same
+	#### su and user amount are the same
 	else {
 		$fs{per} = $fs{used} / $fs{blocks};
 		$fs{user_blocks} = $fs{blocks};
@@ -101,7 +101,7 @@ my %fs;
 	$fs{fused} = $fs{files} - $fs{ffree};
 
 	if($fs{files} > 0) {	
-		####There is a reserved amount for the su
+		#### There is a reserved amount for the su
 		if($fs{ffree} != $fs{favail}) {
 			$fs{user_files} = $fs{files} - ($fs{ffree} - $fs{favail});
 			$fs{user_fused} = $fs{user_files} - $fs{favail};
@@ -116,7 +116,7 @@ my %fs;
 			}
 		}
 
-		####su and user amount are the same
+		#### su and user amount are the same
 		else {
 			$fs{fper} = $fs{fused}/$fs{files};
 			$fs{user_files} = $fs{files};
@@ -132,7 +132,7 @@ my %fs;
 			($fs{fper} += 100);
 	}
 
-	####Probably an NFS mount no inode info
+	#### Probably an NFS mount no inode info
 	else {
 		$fs{fper}       = -1;
 		$fs{fused}      = -1;
@@ -179,10 +179,10 @@ Note that the inode values are not changed by the block size
 argument. 
 
 The return value of df() is a refrence to a hash.
-The main keys of intrest in this hash are:
+The main keys of interest in this hash are:
 
 {per}
-Percent used. This is based on what the non-superuser will have used.
+Percent of disk space used. This is based on what the non-superuser will have used.
 (In other words, if the filesystem has 10% of its space reserved for
 the superuser, then the percent used can go up to 110%.)
 
@@ -248,10 +248,10 @@ Most 'df' applications will print out the 'blocks' or 'user_blocks',
 end up using these values the most.
 
 If the file system does not contain a diffrential in space for
-the superuser then the user_ keys will contain the same
+the superuser, then the user_ keys will contain the same
 values as the su_ keys.
 
-If there was an error df() will return undef 
+If there was an error, df() will return undef 
 and $! will have been set.
 
 If the blocks field returned from statvfs() is 0
@@ -259,14 +259,15 @@ then df() returns undef. This may occur if you
 stat a directory such as /proc.
 
 Requirements:
-Your system must contain statvfs(). 
+Your system must contain statvfs() or
+statfs().
 You must be running perl.5003 or higher.
 
 Note:
 The way the percent full is measured is based on what the
 HP-UX application 'bdf' returns.  The 'bdf' application 
-seems to round a bit different than 'df' does but I like
-'bdf' so that is what I based the percentages on.
+seems to round a bit different than most 'df' apps do, but I
+like 'bdf', so that is what I based the percentages on.
 
 =head1 AUTHOR
 

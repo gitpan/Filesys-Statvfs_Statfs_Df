@@ -10,3 +10,15 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 	- Updated the Makefile.PL to check and see if the statvfs header and statfs
 	  header exist. If I cant find them in the include path I default to the 
 	  previous behavior.
+
+0.70  Fri Sep 24 18:19:42 2004
+	- Changed Makefile.PL to define a new value for Darwin and BSD systems if
+	  no statfs or statvfs headers are found. In the future if either of these 
+	  systems use those headers instead of mount.h and param.h no changes should
+	  be required.
+
+	- Removed HP-UX specific values that are returned from statvfs().
+
+	- Changed some of the text in the documentation and Makefile.PL.
+
+	- Added DISTNAME and now cleanup config.h in Makefile.PL.

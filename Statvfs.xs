@@ -22,7 +22,7 @@ statvfs(dir)
 	Statvfs *st_ptr;
 	PPCODE:
 	if(statvfs(dir, &st) == 0) {
-		st_ptr=&st;
+		st_ptr = &st;
 		EXTEND(sp, 15);
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_bsize)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_frsize)));
@@ -48,9 +48,5 @@ statvfs(dir)
 		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
 #else
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_fstr, 0)));
-#endif
-#ifdef _HPUX__
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_size))); 
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_time)));
 #endif
 	}

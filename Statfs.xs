@@ -7,10 +7,9 @@ extern "C" {
 #include "XSUB.h"
 #include "config.h"
 
-#ifdef _DARWIN__
+#if defined(_DARWIN__NOHEADER) || defined(_FREEBSD__NOHEADER) 
 #include <sys/param.h>
 #include <sys/mount.h>
-
 #else
 #include <sys/statfs.h>
 #endif

@@ -6,31 +6,8 @@ my $module_name = "Statvfs.pm";
 my $statvfs_path = "sys/statvfs.h";
 my $statfs_path = "sys/statfs.h";
 my $include_path = $Config{usrinc};
+my $header_found = 0;
 
-
-
-#### Create header with OS version.
-open(CONFIG, ">config.h") or die "$! config.h";
-
-($Config{osname} eq "hpux") &&
-        (print CONFIG "#define _HPUX__\n");
-
-($Config{osname} eq "dec_osf") &&
-        (print CONFIG "#define _DEC__\n");
-
-($Config{osname} eq "linux") &&
-        (print CONFIG "#define _LINUX__\n");
-
-($Config{osname} eq "aix") &&
-        (print CONFIG "#define _AIX__\n");
-
-($Config{osname} eq "solaris") &&
-        (print CONFIG "#define _SOLARIS__\n");
-
-($Config{osname} eq "darwin") &&
-        (print CONFIG "#define _DARWIN__\n");
-
-close(CONFIG);
 
 
 #### The include path is defined.
@@ -41,46 +18,36 @@ if($include_path) {
 	if(-e "$include_path/$statvfs_path") {
 		print "$include/$statvfs_path exists.\n";
 		print "Using statvfs() with Df.pm ....\n";
+
+		$header_found = 1;
 	}
 
 	elsif(-e "$include_path/$statfs_path") {
-		print "\n$include_path/$statvfs_path does not exist.\n";
-		print "Checking for $include_path/$statfs_path ....\n";
-		print "$include_path/$statfs_path exists.\n";
+		print "\n$include_path/$statvfs_path does not exist,\n";
+		print "but $include_path/$statfs_path exists.\n";
 		print "Using statfs() with Df.pm\n";
 
-		print "\nNOTE: If you want to use statvfs() and the header is located\n";
-		print "somewhere other than $include_path/$statvfs_path you can\n";
-		print "change the statvfs_path, statfs_path, and include_path variables\n";
-		print "in Makefile.PL, and the include statement in statvfs.xs to\n";
-		print "reflect the proper path. Then re-run perl Makefile.PL.\n";
-
-		sleep 3;
+		$header_found = 1;
 
 		switch_to_statfs();
 	}
 
 	else {
-		print "Warning:$include_path/$statvfs_path or $include_path/$statvfs_path\n";
-		print "could not be found.\n\n";
-		print "Assuming the \$Config\{usrinc\} value is incorrect and proceeding ....\n";
-		sleep 3;
 
 		#### Switch to statfs() for these systems
-		#### since they dont have statvfs().
-		#### I hope I have the correct OSes. :-P
-		if($Config{osname} eq "darwin" ||
-   	   	   $Config{osname} eq "openbsd" ||
-   	   	   $Config{osname} eq "freebsd") {
-			print "Since the \$Config\{usrinc\} value was not useable, and you are\n";
-			print "using a system that normally did not have statvfs() at\n";
-			print "the time this module was written, we are going to assume\n";
-			print "that you can only use statfs().\n";
+		#### since they dont support statvfs().
+		if($Config{osname} eq "darwin" || $Config{osname} =~ /bsd$/) {
+			print "It looks like you are on a Darwin or BSD system.\n";
+			print "Since I could not find a statfs or statvfs header,\n";
+			print "I will assume you use the mount.h and param.h headers\n";
+			print "and statfs()\n";
 			switch_to_statfs();
 		} 
 
 		else {
-			print "Using statvfs() ....\n";
+			print "Warning:$include_path/$statvfs_path or $include_path/$statvfs_path\n";
+			print "could not be found.\n\n";
+			print "Assuming that you use use statvfs() ....\n";
 		}
 	}
 }
@@ -91,14 +58,11 @@ else {
 	print "Include path is not defined. Using best guess for which module to use.\n\n";
 
 	#### Switch to statfs() for these systems
-	#### since they dont have statvfs().
-	#### I hope I have the correct OSes. :-P
-	if($Config{osname} eq "darwin" ||
-   	   $Config{osname} eq "openbsd" ||
-   	   $Config{osname} eq "freebsd") {
+	#### since they dont support statvfs().
+	if($Config{osname} eq "darwin" || $Config{osname} =~ /bsd$/) {
 		print "Since the \$Config\{usrinc\} value was undef and you are\n";
 		print "using a system that normally did not have statvfs() at\n";
-		print "the time this module was written, we are going to assume\n";
+		print "the time this module was written, I am going to assume\n";
 		print "that you can only use statfs().\n";
 		switch_to_statfs();
 	} 
@@ -129,10 +93,47 @@ sub switch_to_statfs {
 	close(FILE);
 }
 
+
+
+#### Create header with OS version.
+open(CONFIG, ">config.h") or die "$! config.h";
+
+($Config{osname} eq "hpux") &&
+        (print CONFIG "#define _HPUX__\n");
+
+($Config{osname} eq "dec_osf") &&
+        (print CONFIG "#define _DEC__\n");
+
+($Config{osname} eq "linux") &&
+        (print CONFIG "#define _LINUX__\n");
+
+($Config{osname} eq "aix") &&
+        (print CONFIG "#define _AIX__\n");
+
+($Config{osname} eq "solaris") &&
+        (print CONFIG "#define _SOLARIS__\n");
+
+if($Config{osname} eq "darwin") {
+	($header_found == 1) ? 
+        	(print CONFIG "#define _DARWIN__\n") :
+        	(print CONFIG "#define _DARWIN__NOHEADER\n");
+}
+
+if($Config{osname} eq "freebsd") {
+	($header_found == 1) ?
+        	(print CONFIG "#define _FREEBSD__\n") :
+        	(print CONFIG "#define _FREEBSD__NOHEADER\n");
+}
+
+close(CONFIG);
+
+
 WriteMakefile(
     'NAME'	=> $module_namespace,
     'VERSION_FROM' => $module_name, # finds $VERSION
     'LIBS'	=> [''],   # e.g., '-lm' 
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '',     # e.g., '-I/usr/include/other' 
+    'clean'     => {FILES => 'config.h'},
+    'DISTNAME'  => 'Filesys-Statvfs_Statfs_Df',
 );
