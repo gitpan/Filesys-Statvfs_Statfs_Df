@@ -1,12 +1,13 @@
 This distribution contains the modules Filesys::Statfs, Filesys::Statvfs, and Filesys::Df.
+
 This is a new release to support some systems that only have statfs().
 If you have problems with this release try using Filesys-Statvfs_Df-0.68.
 
 DESCRIPTION
 Filesys::Statfs provides an interface between
 Perl and the statfs() system call. This module
-will only install if you are using Darwin or certain
-BSD systems that dont have statvfs(). 
+will only install if you are using Darwin or
+certain BSD systems that dont have statvfs(). 
 
 SYNOPSIS Filesys::Statfs
 
@@ -14,6 +15,7 @@ use Filesys::Statfs;
 
 	  my($ftype, $bsize, $blocks, $bfree, $files,
              $ffree, $bavail) = statfs("/tmp");
+
 
 
 Filesys::Statvfs provides an interface between
@@ -28,21 +30,21 @@ use Filesys::Statvfs;
            $namemax, $fstr) = statvfs("/tmp");
 
 
-Filesys::Df uses Filesys::Statvfs to obtain
-filesystem statistics then creates additional
-filesystem information such as percent full,
-user and superuser differentials, etc.
+
+Filesys::Df uses Filesys::Statvfs or
+Filesys::Statfs to obtain filesystem statistics,
+then creates additional filesystem information
+such as percent full, user and superuser
+differentials, etc ....
 
 If the system does not contain the statvfs() 
-call (Darwin or certain BSD OSes). The Makefile
-will try to use the Filesys::Statfs module instead.
-This should be abstract for the user.
+call (Darwin or certain BSD OSes most likely). The
+Makefile will try to use the Filesys::Statfs module 
+instead. 
 
-Filesys::Df will also let you specify the
-block size for the values you wish to see.
-The default block size output is 1024 bytes per
-block. So if you want to get the size in bytes
-just take the block size and * it by 1024.
+Filesys::Df will also let you specify the block
+size for the values you wish to see. The default
+block size output is 1024 bytes per block.
 
 SYNOPSIS Filesys::Df
 
@@ -62,8 +64,8 @@ use Filesys::Df;
         
         print"Total Bytes", ($ref->{blocks} * 1024), "\n";
         
-        #These are just some of the keys that are available.
-        #See the documentation for the others.
+        # These are just some of the keys that are available.
+        # See the documentation for the others.
 
 
 
@@ -76,15 +78,15 @@ TO INSTALL RUN:
 	make install
 
 For this module to install and work properly you will need
-to have the statvfs() system call on your system. 
-If you are using some BSD versions or Darwin it will work
-with the statfs() system call. A good way to tell if your
-system has the statvfs() system call is to look for the 
-sys/statvfs.h header in your include directory (Usually /usr/include/).
-Same goes for statfs().
+to have the statvfs() or statfs() system call supported
+by your system.
 
-If there is an error during the 'make', it is
-possible that you do not have statvfs() on your system.
+A good way to tell if your system supports them is to
+to look for the sys/statvfs.h or sys/statfs.h header in your
+include directory (Usually /usr/include/).
+
+If there is an error during the 'make', it is possible
+that your system does not support statvfs() or statfs().
 Another possible reason may be that the statvfs structure defined
 in statvfs.h does not contain one or more of the fields that are
 defined in Statvfs.xs. This also applies to statfs().
@@ -92,15 +94,17 @@ defined in Statvfs.xs. This also applies to statfs().
 During the 'make test' test.pl will use statvfs() or statfs()
 to stat the root directory "/". If it fails it will report
 an error, otherwise it will report all the standard
-fields in the structure. If you are running any flavor
-of Digital Unix, or IRIX, the fstr value may be NULL.
+fields in the structure. If you are running any flavor of
+Digital Unix, or IRIX, the fstr value may be NULL.
 The 'make test' will then proceed to test df() call.
 
 Once installed, run 'perldoc Filesys::Df' for more information. 
 
 If you have any problems or questions please email
 me at IGuthrie@aol.com with "Filesys Module" in
-the subject line.
+the subject line. Please include the module version
+and if you are using statvfs() or statfs() on your
+system.
 
 Copyright (c) 2004 Ian Guthrie. All rights reserved.
                This program is free software; you can redistribute it and/or
