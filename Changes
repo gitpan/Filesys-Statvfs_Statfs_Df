@@ -1,0 +1,7 @@
+Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
+
+0.01  Thur Mar 11 23:26:11 2004
+	- I created this package that includes all three modules.
+	  I made a bunch of changes to Filesys::Statfs. Right now it only
+          works with Darwin and BSD. These are the only two Unix OSes without statvfs()
+	  that I could find.

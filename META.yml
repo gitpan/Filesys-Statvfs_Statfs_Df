@@ -1,0 +1,9 @@
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Filesys-Statvfs_Statfs_Df
+version:      0.01
+version_from: Statfs.pm
+installdirs:  site
+requires:
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.12
