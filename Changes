@@ -24,6 +24,10 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 	- Added DISTNAME and now cleanup config.h in Makefile.PL.
 
 0.72  Tues Feb 8 23:19:42 2005
-	- Fixed bug where large filesystems(1+ terabyte), that would use all 32bits in the blocks
-	  field, would report incorrect values. The xs files now check whether the values
-	  should be pushed on the stack as signed or unsigned.
+	- Fixed bug where large filesystems(1+ terabyte), that would use
+ 	  all 32bits in the blocks field, would report incorrect values.
+	  The xs files now check whether the values should be pushed on the
+	  stack as signed or unsigned.
+
+0.73  Tues Feb 18 14:10:42 2005
+	- Added some extra error checking.

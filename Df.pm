@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.72';
+$VERSION = '0.73';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -46,11 +46,14 @@ my %fs;
 		if($block_size > $frsize) {
 			$result = $block_size / $frsize;
 			$fs{blocks} /= $result;
-			$fs{bfree} /= $result;
+			($fs{bfree} != 0) &&
+				($fs{bfree} /= $result);
 			#### Keep bavail -
 			($fs{bavail} < 0) &&
 				($result *= -1);
-			$fs{bavail} /= $result;
+
+			($fs{bavail} != 0) &&
+				($fs{bavail} /= $result);
 		}
 
 		elsif($block_size < $frsize) {
@@ -82,7 +85,14 @@ my %fs;
 	
 	#### su and user amount are the same
 	else {
-		$fs{per} = $fs{used} / $fs{blocks};
+		if($fs{used} == 0)  {
+			$fs{per} = 0;
+		}
+
+		else {
+			$fs{per} = $fs{used} / $fs{blocks};
+		}
+
 		$fs{user_blocks} = $fs{blocks};
 		$fs{user_used} = $fs{used};
 	}
@@ -118,7 +128,14 @@ my %fs;
 
 		#### su and user amount are the same
 		else {
-			$fs{fper} = $fs{fused}/$fs{files};
+			if($fs{fused} == 0) {
+				$fs{fper} = 0;
+			}
+
+			else {
+				$fs{fper} = $fs{fused}/$fs{files};
+			}
+
 			$fs{user_files} = $fs{files};
 			$fs{user_fused} = $fs{fused};
 		}
