@@ -24,14 +24,28 @@ statvfs(dir)
 	if(statvfs(dir, &st) == 0) {
 		st_ptr = &st;
 		EXTEND(sp, 15);
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_bsize)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_frsize)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_blocks)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_bfree)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_bavail)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_files)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_ffree)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_favail)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_bsize)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_frsize)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_blocks)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_bfree)));
+		/* bavail can be a negative value */
+		if(st_ptr->f_bavail < 0) {
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_bavail)));
+		}
+		else {
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_bavail)));
+		}
+		/* inode values can be negative as well as just f_avail */
+		if(st_ptr->f_favail < 0) {
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_files)));
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_ffree)));
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_favail)));
+		}
+		else {
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_files)));
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_ffree)));
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_favail)));
+		}
 #if defined(_AIX__) || defined(_LINUX__)
 		PUSHs(sv_2mortal(newSViv(0)));
 #else

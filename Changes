@@ -11,7 +11,7 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 	  header exist. If I cant find them in the include path I default to the 
 	  previous behavior.
 
-0.70  Fri Sep 24 18:19:42 2004
+0.71  Fri Sep 24 18:19:42 2004
 	- Changed Makefile.PL to define a new value for Darwin and BSD systems if
 	  no statfs or statvfs headers are found. In the future if either of these 
 	  systems use those headers instead of mount.h and param.h no changes should
@@ -22,3 +22,8 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 	- Changed some of the text in the documentation and Makefile.PL.
 
 	- Added DISTNAME and now cleanup config.h in Makefile.PL.
+
+0.72  Tues Feb 8 23:19:42 2005
+	- Fixed bug where large filesystems(1+ terabyte), that would use all 32bits in the blocks
+	  field, would report incorrect values. The xs files now check whether the values
+	  should be pushed on the stack as signed or unsigned.

@@ -42,12 +42,23 @@ statfs(dir)
 #else
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_type)));
 #endif
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_bsize)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_blocks)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_bfree)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_files)));
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_ffree)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_bsize)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_blocks)));
+		PUSHs(sv_2mortal(newSVuv(st_ptr->f_bfree)));
+		if(st_ptr->f_files < 0) {
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_files)));
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_ffree)));
+		}
+		else {
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_files)));
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_ffree)));
+		}
 #ifndef _SOLARIS__
-		PUSHs(sv_2mortal(newSViv(st_ptr->f_bavail)));
+		if(st_ptr->f_bavail < 0) {
+			PUSHs(sv_2mortal(newSViv(st_ptr->f_bavail)));
+		}
+		else {
+			PUSHs(sv_2mortal(newSVuv(st_ptr->f_bavail)));
+		}
 #endif
 	}
