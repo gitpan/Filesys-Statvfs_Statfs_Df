@@ -32,5 +32,7 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 0.73  Tues Feb 18 14:10:42 2005
 	- Added some extra error checking.
 
-0.74  Tues Mar 6 11:43:42 2005
-	- Changed the signed test.
+0.75  Tues Mar 6 15:43:42 2005
+	- Changed signed test.
+	- Found out that pre 5.6.0 doesnt support newSVuv(). Added checks in xs code
+	 for 5.6.0.
