@@ -36,3 +36,9 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 	- Changed signed test.
 	- Found out that pre 5.6.0 doesnt support newSVuv(). Added checks in xs code
 	 for 5.6.0.
+
+0.76  Thur June 30 19:48:42 2005
+	- Added XSPROTOARG to Makefile.PL to suppress compiler warning.
+	- Changed makefile to always create Df.pm and test.pl instead of having them 
+ 	  by default point to statvfs(). This doesn't change the functionality of 
+	  the module at all. It just makes it a little easier to maintain.

@@ -5,6 +5,8 @@ my $module_namespace = "Filesys::Statvfs";
 my $module_name = "Statvfs.pm";
 my $statvfs_path = "sys/statvfs.h";
 my $statfs_path = "sys/statfs.h";
+my $df_file = "./Df.pm";
+my $test_file = "./test.pl";
 my $include_path = $Config{usrinc};
 my $header_found = 0;
 
@@ -20,6 +22,8 @@ if($include_path) {
 		print "Using statvfs() with Df.pm ....\n";
 
 		$header_found = 1;
+
+		switch_to_statvfs();
 	}
 
 	elsif(-e "$include_path/$statfs_path") {
@@ -48,6 +52,7 @@ if($include_path) {
 			print "Warning:$include_path/$statvfs_path or $include_path/$statvfs_path\n";
 			print "could not be found.\n\n";
 			print "Assuming that you use use statvfs() ....\n";
+			switch_to_statvfs();
 		}
 	}
 }
@@ -69,6 +74,7 @@ else {
 
 	else {
 		print "Using statvfs() ....\n";
+		switch_to_statvfs();
 	}
 }
 
@@ -79,14 +85,35 @@ sub switch_to_statfs {
 
 	# copy test.pl and df.pm
 	open(FILE, "./test_statfs") or die "$! ./test_statfs\n";
-	open(TEST, ">./test.pl") or die "$! ./test.pl\n";
+	open(TEST, ">$test_file") or die "$! $test_file\n";
 	@contents = <FILE>;
 	print TEST @contents;
 	close(TEST);
 	close(FILE);
 
 	open(FILE, "./DfStatfs") or die "$! ./DfStatfs\n";
-	open(DF, ">./Df.pm") or die "$! ./Df.pm\n";
+	open(DF, ">$df_file") or die "$! $df_file\n";
+	@contents = <FILE>;
+	print DF @contents;
+	close(DF);
+	close(FILE);
+}
+
+
+sub switch_to_statvfs {
+	$module_namespace = "Filesys::Statvfs";
+	$module_name = "Statvfs.pm";
+
+	# copy test.pl and df.pm
+	open(FILE, "./test_statvfs") or die "$! ./test_statvfs\n";
+	open(TEST, ">$test_file") or die "$! $test_file\n";
+	@contents = <FILE>;
+	print TEST @contents;
+	close(TEST);
+	close(FILE);
+
+	open(FILE, "./DfStatvfs") or die "$! ./DfStatvfs\n";
+	open(DF, ">$df_file") or die "$! $df_file\n";
 	@contents = <FILE>;
 	print DF @contents;
 	close(DF);
@@ -136,4 +163,5 @@ WriteMakefile(
     'INC'	=> '',     # e.g., '-I/usr/include/other' 
     'clean'     => {FILES => 'config.h'},
     'DISTNAME'  => 'Filesys-Statvfs_Statfs_Df',
+    'XSPROTOARG' => '-prototypes' 
 );
