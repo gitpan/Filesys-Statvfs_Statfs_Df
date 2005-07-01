@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.76';
+$VERSION = '0.77';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -265,7 +265,7 @@ Most 'df' applications will print out the 'blocks' or 'user_blocks',
 'bavail', 'used', and the percent full values. So you will probably
 end up using these values the most.
 
-If the file system does not contain a diffrential in space for
+If the file system does not contain a differential in space for
 the superuser then the user_ keys will contain the same
 values as the su_ keys.
 

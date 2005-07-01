@@ -1,8 +1,5 @@
 This distribution contains the modules Filesys::Statfs, Filesys::Statvfs, and Filesys::Df.
 
-This is a new release to support some systems that only have statfs().
-If you have problems with this release try using Filesys-Statvfs_Df-0.68.
-
 DESCRIPTION
 Filesys::Statvfs provides an interface between
 Perl and the statvfs() system call.
@@ -19,7 +16,7 @@ use Filesys::Statvfs;
 
 Filesys::Statfs provides an interface between
 Perl and the statfs() system call. This module
-will only install if you are a system that
+will only install if you are using a system that
 doesn't have statvfs(). 
 
 SYNOPSIS Filesys::Statfs
@@ -72,7 +69,7 @@ TO INSTALL RUN:
 	make test
 	make install
 
-For this module to install and work properly your
+For this module to install and work properly, your
 system will need to support either the statvfs() or
 statfs() system call.
 
