@@ -87,7 +87,7 @@ statvfs(dir)
 #else
 		PUSHs(sv_2mortal(newSViv(st.f_fsid)));
 #endif
-#ifdef _LINUX__
+#if defined(_LINUX__) || defined(_DARWIN__) || defined(_FREEBSD__) || defined(_CYGWIN__)
 		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
 #else
 		PUSHs(sv_2mortal(newSVpv(st.f_basetype, 0)));
@@ -106,7 +106,7 @@ statvfs(dir)
 			PUSHs(sv_2mortal(newSViv(st.f_flag)));
 			PUSHs(sv_2mortal(newSViv(st.f_namemax)));
 #endif
-#if defined(_DEC__) || defined(_LINUX__)
+#if defined(_DEC__) || defined(_LINUX__) || defined(_DARWIN__) || defined(_FREEBSD__) || defined(_CYGWIN__)
 		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
 #else
 		PUSHs(sv_2mortal(newSVpv(st.f_fstr, 0)));

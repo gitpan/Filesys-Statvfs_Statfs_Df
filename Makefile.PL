@@ -140,6 +140,9 @@ open(CONFIG, ">config.h") or die "$! config.h";
 ($Config{osname} eq "solaris") &&
         (print CONFIG "#define _SOLARIS__\n");
 
+($Config{osname} eq "cygwin") &&
+        (print CONFIG "#define _CYGWIN__\n");
+
 if($Config{osname} eq "darwin") {
 	($header_found == 1) ? 
         	(print CONFIG "#define _DARWIN__\n") :

@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.77';
+$VERSION = '0.78';
 
 sub df {
 my ($dir, $block_size) = @_;
