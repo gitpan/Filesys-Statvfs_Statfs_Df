@@ -45,3 +45,7 @@ Revision history for Perl extension Filesys::Statfs Filesys::Statvfs Filesys::Df
 
 0.78  Thur July 14 02:25:42 2005
 	- Changed Statvfs.xs to better support Tiger, FreeBSD, and Cygwin.
+
+0.79  Thur April 19 10:15:42 2060
+	- Fixed a bug in Df.pm. Passing a directory named "0" without any path caused
+	  the module to croak.
